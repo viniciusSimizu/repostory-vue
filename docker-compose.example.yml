@@ -1,0 +1,12 @@
+version: '3'
+services:
+  nginx:
+    container_name: nginx
+    build: .
+    environment:
+      - VITE_BASE_URL=
+      - BASEURL_API=
+      - VITE_CLIENT_ID=
+      - VITE_CLIENT_SECRET=
+    ports:
+      - "5173:80"
