@@ -4,14 +4,28 @@ import { validateOrReject } from 'class-validator'
 import { apiPublicAxios } from '@/axios/api-public.axios'
 import { useAccessTokenStore } from '@/stores/access-token.store'
 import { useUserPermissionsStore } from '@/stores/user-permissions.store'
+import ErrorAlertComponent from '@/components/ErrorAlertComponent.vue'
+import { ErrorAlertModel } from '@/components/models/error-alert.model'
 
 export default {
     name: 'signup-view',
+    components: { ErrorAlertComponent },
     data() {
         return {
             accessToken: useAccessTokenStore(),
             permissions: useUserPermissionsStore(),
             createUserModel: new CreateUserModel(),
+            errorModel: new ErrorAlertModel(),
+            passwordOne: {
+                hidden: true,
+                type: 'password',
+                icon: 'fa-regular fa-eye',
+            },
+            passwordTwo: {
+                hidden: true,
+                type: 'password',
+                icon: 'fa-regular fa-eye',
+            },
             confirmPassword: '',
         }
     },
@@ -33,7 +47,49 @@ export default {
                     alert('Incorrect password')
                 }
             } catch (err) {
-                alert('Error on signup')
+                console.log(err)
+            }
+        },
+
+        handlePassword(passwordId) {
+            this.errorModel = {
+                title: 'nak',
+                message: 'pinadu',
+                show: true,
+            }
+            switch (passwordId) {
+                case 'one':
+                    if (this.passwordOne.hidden) {
+                        this.passwordOne = {
+                            hidden: false,
+                            type: 'text',
+                            icon: 'fa-regular fa-eye-slash',
+                        }
+                    } else {
+                        this.passwordOne = {
+                            hidden: true,
+                            type: 'password',
+                            icon: 'fa-regular fa-eye',
+                        }
+                    }
+                    break
+                case 'two':
+                    if (this.passwordTwo.hidden) {
+                        this.passwordTwo = {
+                            hidden: false,
+                            type: 'text',
+                            icon: 'fa-regular fa-eye-slash',
+                        }
+                    } else {
+                        this.passwordTwo = {
+                            hidden: true,
+                            type: 'password',
+                            icon: 'fa-regular fa-eye',
+                        }
+                    }
+                    break
+                default:
+                    break
             }
         },
     },
@@ -44,6 +100,7 @@ export default {
     <div
         id="signup-view"
         class="w-100 h-100 d-flex flex-column justify-content-center align-items-center"
+        ref="teste"
     >
         <div class="d-flex justify-content-start w-100 px-5">
             <router-link
@@ -81,18 +138,32 @@ export default {
                         placeholder="Email"
                         v-model="createUserModel.email"
                     />
-                    <input
-                        class="authentication-input"
-                        placeholder="Password"
-                        type="password"
-                        v-model="createUserModel.password"
-                    />
-                    <input
-                        class="authentication-input"
-                        placeholder="Confirm Password"
-                        type="password"
-                        v-model="confirmPassword"
-                    />
+                    <div class="d-flex align-items-center">
+                        <input
+                            class="authentication-input password-input"
+                            placeholder="Password"
+                            :type="passwordOne.type"
+                            v-model="createUserModel.password"
+                        />
+                        <font-awesome-icon
+                            :icon="passwordOne.icon"
+                            class="eye-icon"
+                            @click="handlePassword('one')"
+                        />
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <input
+                            class="authentication-input password-input"
+                            placeholder="Confirm Password"
+                            :type="passwordTwo.type"
+                            v-model="confirmPassword"
+                        />
+                        <font-awesome-icon
+                            :icon="passwordTwo.icon"
+                            class="eye-icon"
+                            @click="handlePassword('two')"
+                        />
+                    </div>
                     <div class="d-flex justify-content-center">
                         <button
                             id="signup-submit"
@@ -105,6 +176,10 @@ export default {
                 </form>
             </div>
         </div>
+        <ErrorAlertComponent
+            v-bind:error-alert="errorModel"
+            @exit="errorModel.show = false"
+        />
     </div>
 </template>
 
@@ -126,5 +201,20 @@ export default {
 
 #goBack {
     height: 4rem;
+}
+
+.password-input {
+    padding-right: 3.5rem;
+}
+
+.eye-icon {
+    margin-left: -3rem;
+
+    z-index: 3;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 75%;
+    }
 }
 </style>

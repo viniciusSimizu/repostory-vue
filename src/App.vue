@@ -1,3 +1,7 @@
+<script>
+export default {}
+</script>
+
 <template>
     <RouterView id="main"></RouterView>
 </template>

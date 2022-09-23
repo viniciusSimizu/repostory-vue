@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import axios, { Axios } from 'axios'
 import { apiPublicAxios } from '@/axios/api-public.axios'
 import router from '@/router'
+import * as process from 'process'
 
 export const useAccessTokenStore = defineStore('accessToken', {
     state: () => ({
@@ -41,7 +42,7 @@ export const useAccessTokenStore = defineStore('accessToken', {
         },
         apiAxios(): Axios {
             const requestAxios = axios.create({
-                baseURL: import.meta.env.VITE_BASEURL_API,
+                baseURL: process.env.BASEURL_API,
                 headers: { Authorization: `Bearer ${this.getAccessToken}` },
                 timeout: 3500,
             })
