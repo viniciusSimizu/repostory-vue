@@ -9,5 +9,6 @@ export class CreateUserModel {
     email: string
 
     @IsString()
+    @Length(3)
     password: string
 }

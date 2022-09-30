@@ -1,7 +1,6 @@
 import { useAccessTokenStore } from '@/stores/access-token.store'
 import { useUserPermissionsStore } from '@/stores/user-permissions.store'
 import { useUserDatasStore } from '@/stores/user-datas.store'
-import router from '@/router'
 
 export async function authMiddleware() {
     const accessToken = useAccessTokenStore()
@@ -25,7 +24,7 @@ async function verifyAssignature(accessToken, permissions, userStore) {
         .then(async () => {
             await userStore.setUser()
         })
-        .catch((err) => {
-            console.log(err)
+        .catch(() => {
+            accessToken.remove()
         })
 }

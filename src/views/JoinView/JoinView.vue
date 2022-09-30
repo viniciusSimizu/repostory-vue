@@ -6,9 +6,7 @@ export default {
 
 <template>
     <main class="h-100 w-100 d-flex justify-content-center align-items-center">
-        <KeepAlive>
-            <router-view></router-view>
-        </KeepAlive>
+        <router-view></router-view>
     </main>
 </template>
 

@@ -46,27 +46,32 @@ export const useAccessTokenStore = defineStore('accessToken', {
                 timeout: 3500,
             })
 
-            requestAxios.interceptors.response.use(undefined, async (error) => {
-                try {
-                    if (
-                        error.response.data.mensage === 'JWT Invalid' &&
-                        error.response.status === 401
-                    ) {
-                        const request = await this.refresh().then(() => {
-                            return axios({
-                                ...error.config,
-                                headers: {
-                                    Authorization: `Bearer ${this.accessToken}`,
-                                },
+            requestAxios.interceptors.response.use(
+                (response) => response,
+                async (error) => {
+                    try {
+                        if (
+                            error.response.data.mensage === 'JWT Invalid' &&
+                            error.response.status === 401
+                        ) {
+                            const request = await this.refresh().then(() => {
+                                return axios({
+                                    ...error.config,
+                                    headers: {
+                                        Authorization: `Bearer ${this.accessToken}`,
+                                    },
+                                })
                             })
-                        })
 
-                        return Promise.resolve(request)
+                            return Promise.resolve(request)
+                        } else {
+                            return Promise.reject(error)
+                        }
+                    } catch (err) {
+                        return Promise.reject(error)
                     }
-                } catch (err) {
-                    return Promise.reject(error)
                 }
-            })
+            )
 
             return requestAxios
         },
