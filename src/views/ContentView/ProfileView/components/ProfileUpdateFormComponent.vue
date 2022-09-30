@@ -3,6 +3,7 @@ import { UpdateUserModel } from '@/views/ContentView/ProfileView/model/update-us
 import { validateOrReject } from 'class-validator'
 import { useAccessTokenStore } from '@/stores/access-token.store'
 import { useUserDatasStore } from '@/stores/user-datas.store'
+import { useModalAlert } from '@/stores/modal-alert.store'
 
 export default {
     data() {
@@ -12,6 +13,7 @@ export default {
 
             user: useUserDatasStore().getUser,
             userStore: useUserDatasStore(),
+            modalStore: useModalAlert(),
             accessToken: useAccessTokenStore(),
         }
     },
@@ -19,20 +21,56 @@ export default {
         async updateUser(e) {
             e.preventDefault()
 
-            try {
-                await validateOrReject(this.userData)
-                if (this.userData.password === this.confirmPassword) {
-                    await this.accessToken
-                        .apiAxios()
-                        .put('user/update', this.userData)
-                        .then(() => {
-                            this.userStore.setUser()
-                            this.$router.push({ name: 'profile-route' })
+            await validateOrReject(this.userData)
+                .then(async () => {
+                    if (
+                        this.userData.password == this.confirmPassword ||
+                        this.userData.password === undefined
+                    ) {
+                        await this.accessToken
+                            .apiAxios()
+                            .put('user/update', this.userData)
+                            .then(() => {
+                                this.userStore.setUser()
+                                this.$router.push({ name: 'profile-route' })
+                            })
+                    } else {
+                        this.modalStore.openModal({
+                            title: 'Incorrect password',
+                            message: 'Passwords do not match',
+                            type: 'error',
                         })
-                }
-            } catch (err) {
-                console.log(err)
-            }
+                    }
+                })
+                .catch((errors) => {
+                    const errorToDisplay = errors[0]
+                    switch (errorToDisplay.property) {
+                        case 'name':
+                            this.modalStore.openModal({
+                                title: 'Username invalid',
+                                message: Object.values(
+                                    errorToDisplay.constraints
+                                )[0],
+                                type: 'error',
+                            })
+                            break
+                        case 'email':
+                            this.modalStore.openModal({
+                                title: 'Email invalid',
+                                message: 'Must be provided a valid email',
+                                type: 'error',
+                            })
+                            break
+                        case 'password':
+                            this.modalStore.openModal({
+                                title: 'Password invalid',
+                                message: Object.values(
+                                    errorToDisplay.constraints
+                                )[0],
+                                type: 'error',
+                            })
+                    }
+                })
         },
         updateData() {
             this.userData.name = this.user.name

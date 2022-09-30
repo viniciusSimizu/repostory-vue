@@ -14,9 +14,6 @@ export default {
             })
         },
     },
-    mounted() {
-        console.log(this.data)
-    },
     computed: {
         getUserImage() {
             return this.data.avatarUrl ?? '/src/assets/octocat.png'

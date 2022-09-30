@@ -12,5 +12,6 @@ export class UpdateUserModel {
 
     @IsOptional()
     @IsString()
-    password?: string = ''
+    @Length(3)
+    password?: string
 }

@@ -15,7 +15,7 @@ export default {
     methods: {
         getUser(slug) {
             apiPublicAxios.get(`user/find/${slug}`).then(({ data }) => {
-                this.user = data
+                this.user = data.user
                 if (this.user?.githubAccount?.username) {
                     this.gitUser = true
                 } else {

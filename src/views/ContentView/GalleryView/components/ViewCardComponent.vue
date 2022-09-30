@@ -4,6 +4,7 @@ import { useAccessTokenStore } from '@/stores/access-token.store'
 import CatCardAlreadyRegisteredComponent from './CatCardAlreadyRegisteredComponent.vue'
 import DeleteUpdateCardComponent from './DeleteUpdateCardComponent.vue'
 import SaveRepositoryCardComponent from './SaveRepositoryCardComponent.vue'
+import { useModalAlert } from '@/stores/modal-alert.store'
 
 export default {
     components: {
@@ -18,6 +19,7 @@ export default {
     },
     data: () => ({
         accessToken: useAccessTokenStore(),
+        modalStore: useModalAlert(),
     }),
     methods: {
         async createRepository() {
@@ -25,10 +27,20 @@ export default {
                 .apiAxios()
                 .post(`repository/create/${this.cardData.repoName}`)
                 .then(() => {
-                    alert('Criadu')
+                    this.modalStore.openModal({
+                        title: 'SUCCESS',
+                        message: 'criadu com sucesso',
+                        type: 'success',
+                    })
                     this.$emit('created', this.cardData.apiId)
                 })
-                .catch(() => console.log('ñ criadu'))
+                .catch(() => {
+                    this.modalStore.openModal({
+                        title: 'Error',
+                        message: 'Error when trying to save repository',
+                        type: 'error',
+                    })
+                })
         },
 
         async deleteRepository() {
@@ -36,7 +48,11 @@ export default {
                 .apiAxios()
                 .delete(`repository/delete/${this.cardData.id}`)
                 .then(() => {
-                    alert('Deleted')
+                    this.modalStore.openModal({
+                        title: 'Success',
+                        message: 'deletado com sucesso',
+                        type: 'success',
+                    })
                     this.$emit('destroy', this.cardData.id)
                 })
         },

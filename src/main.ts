@@ -13,11 +13,14 @@ import {
     faArrowAltCircleLeft,
     faBoxArchive,
     faExternalLink,
+    faGhost,
+    faHandshake,
     faMagnifyingGlass,
     faShieldCat,
     faSplotch,
 } from '@fortawesome/free-solid-svg-icons'
 import { faGithub, faGithubAlt } from '@fortawesome/free-brands-svg-icons'
+import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
 
 const app = createApp(App)
 
@@ -34,7 +37,13 @@ library.add(
     faBoxArchive,
     faSplotch,
     faShieldCat,
-    faExternalLink
+    faExternalLink,
+    faEye,
+    faEyeSlash,
+    faGhost,
+    faHandshake
 )
 
 app.mount('#app')
+
+export { app }
