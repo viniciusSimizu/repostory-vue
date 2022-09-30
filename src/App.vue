@@ -1,9 +1,41 @@
 <script>
-export default {}
+import { useModalAlert } from '@/stores/modal-alert.store'
+import { ModalAlertModel } from '@/components/models/modal-alert.model'
+import ErrorAlertComponent from '@/components/ErrorAlertComponent.vue'
+import SuccessAlertComponent from '@/components/SuccessAlertComponent.vue'
+import { useUserPermissionsStore } from '@/stores/user-permissions.store'
+
+export default {
+    components: { SuccessAlertComponent, ErrorAlertComponent },
+    data() {
+        return {
+            modalStore: useModalAlert(),
+            infos: new ModalAlertModel(),
+            show: false,
+            permissions: useUserPermissionsStore(),
+        }
+    },
+    mounted() {
+        this.modalStore.$subscribe(() => {
+            this.infos = this.modalStore.getInfosState
+            this.show = this.modalStore.getShowState
+        })
+    },
+}
 </script>
 
 <template>
     <RouterView id="main"></RouterView>
+    <ErrorAlertComponent
+        v-bind:error-alert="infos"
+        v-bind:show-state="show"
+        @exit="modalStore.closeModal()"
+    />
+    <SuccessAlertComponent
+        v-bind:success-alert="infos"
+        v-bind:show-state="show"
+        @exit="modalStore.closeModal()"
+    />
 </template>
 
 <style lang="scss">

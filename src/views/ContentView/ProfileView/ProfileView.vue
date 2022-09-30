@@ -5,6 +5,7 @@ import ProfileButtonDisplayComponent from '@/views/ContentView/ProfileView/compo
 import ProfileUpdateFormComponent from '@/views/ContentView/ProfileView/components/ProfileUpdateFormComponent.vue'
 import { useAccessTokenStore } from '@/stores/access-token.store'
 import { useUserDatasStore } from '@/stores/user-datas.store'
+import { useModalAlert } from '@/stores/modal-alert.store'
 
 export default {
     components: {
@@ -17,6 +18,7 @@ export default {
             permissions: useUserPermissionsStore(),
             accessToken: useAccessTokenStore(),
             userStore: useUserDatasStore(),
+            modalStore: useModalAlert(),
             user: useUserDatasStore().getUser,
             updating: false,
         }
@@ -37,7 +39,7 @@ export default {
         },
         async onDeleteAccount() {
             if (
-                prompt(`Digit ${this.user.name} to delete`) === this.user.name
+                prompt(`Digit (${this.user.name}) to delete`) === this.user.name
             ) {
                 await this.accessToken
                     .apiAxios()
@@ -45,8 +47,20 @@ export default {
                     .then(() => {
                         this.accessToken.remove()
                         this.permissions.$reset()
-                        alert('Deleted')
+                        this.modalStore.openModal({
+                            title: 'DELETADO',
+                            message: 'conta deletada com sucesso',
+                            type: 'success',
+                        })
                         this.$router.push({ name: 'homepage-route' })
+                    })
+                    .catch(() => {
+                        this.modalStore.openModal({
+                            title: 'Something went wrong',
+                            message:
+                                'User can not be deleted, try again later ;-;',
+                            type: 'error',
+                        })
                     })
             }
         },

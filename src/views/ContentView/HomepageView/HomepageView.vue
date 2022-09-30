@@ -5,6 +5,7 @@ import GithubComponent from '@/components/GithubComponent.vue'
 import { useUserDatasStore } from '@/stores/user-datas.store'
 import { UserInfoModel } from '@/views/ContentView/HomepageView/model/user-info.model'
 import GithubInfoPadComponent from '@/views/ContentView/HomepageView/components/GithubInfoPadComponent.vue'
+import { useModalAlert } from '@/stores/modal-alert.store'
 
 export default {
     name: 'homepage-view',
@@ -14,6 +15,7 @@ export default {
             accessToken: useAccessTokenStore(),
             permissions: useUserPermissionsStore(),
             userStore: useUserDatasStore(),
+            modalStore: useModalAlert(),
             user: useUserDatasStore().getUser,
             userInfo: new UserInfoModel(),
         }
@@ -32,8 +34,12 @@ export default {
                 .then(({ data }) => {
                     this.userInfo = data.githubAccount._count
                 })
-                .catch((err) => {
-                    console.log(err)
+                .catch(() => {
+                    this.modalStore.openModal({
+                        title: 'API Error',
+                        message: 'Something went wrong on api',
+                        type: 'error',
+                    })
                 })
         }
     },

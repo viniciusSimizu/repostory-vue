@@ -14,8 +14,8 @@ import {
     faBoxArchive,
     faExternalLink,
     faGhost,
+    faHandshake,
     faMagnifyingGlass,
-    faScroll,
     faShieldCat,
     faSplotch,
 } from '@fortawesome/free-solid-svg-icons'
@@ -40,7 +40,8 @@ library.add(
     faExternalLink,
     faEye,
     faEyeSlash,
-    faGhost
+    faGhost,
+    faHandshake
 )
 
 app.mount('#app')

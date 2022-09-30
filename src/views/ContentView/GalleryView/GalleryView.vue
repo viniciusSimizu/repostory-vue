@@ -3,12 +3,15 @@ import ViewCardComponent from './components/ViewCardComponent.vue'
 import { useAccessTokenStore } from '@/stores/access-token.store'
 import { useUserPermissionsStore } from '@/stores/user-permissions.store'
 import { apiPublicAxios } from '@/axios/api-public.axios'
+import { useModalAlert } from '@/stores/modal-alert.store'
+
 export default {
     components: { ViewCardComponent },
     data() {
         return {
             accessToken: useAccessTokenStore(),
             permissions: useUserPermissionsStore(),
+            modalStore: useModalAlert(),
             adding: false,
             changing: false,
             repositories: [],
@@ -42,9 +45,12 @@ export default {
                             this.repositories = data
                         })
                 }
-                console.log(this.repositories)
-            } catch (err) {
-                // alert(err)
+            } catch {
+                this.modalStore.openModal({
+                    title: 'Repositories can not be pulled',
+                    message: 'Error when trying to pull repositories',
+                    type: 'error',
+                })
             }
         },
         changeStatus() {

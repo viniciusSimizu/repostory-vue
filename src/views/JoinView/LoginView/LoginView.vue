@@ -5,6 +5,7 @@ import { validateOrReject } from 'class-validator'
 import { useAccessTokenStore } from '@/stores/access-token.store'
 import { useUserPermissionsStore } from '@/stores/user-permissions.store'
 import { useUserDatasStore } from '@/stores/user-datas.store'
+
 export default {
     name: 'login-view',
     data() {

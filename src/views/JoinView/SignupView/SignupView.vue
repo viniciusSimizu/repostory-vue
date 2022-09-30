@@ -4,18 +4,16 @@ import { validateOrReject } from 'class-validator'
 import { apiPublicAxios } from '@/axios/api-public.axios'
 import { useAccessTokenStore } from '@/stores/access-token.store'
 import { useUserPermissionsStore } from '@/stores/user-permissions.store'
-import ErrorAlertComponent from '@/components/ErrorAlertComponent.vue'
-import { ErrorAlertModel } from '@/components/models/error-alert.model'
+import { useModalAlert } from '@/stores/modal-alert.store'
 
 export default {
     name: 'signup-view',
-    components: { ErrorAlertComponent },
     data() {
         return {
             accessToken: useAccessTokenStore(),
             permissions: useUserPermissionsStore(),
             createUserModel: new CreateUserModel(),
-            errorModel: new ErrorAlertModel(),
+            modalStore: useModalAlert(),
             passwordOne: {
                 hidden: true,
                 type: 'password',
@@ -32,31 +30,66 @@ export default {
     methods: {
         async handleSignUp(e) {
             e.preventDefault()
-            try {
-                await validateOrReject(this.createUserModel)
-                if (this.createUserModel.password === this.confirmPassword) {
-                    await apiPublicAxios
-                        .post('user/signup', this.createUserModel)
-                        .then(({ data }) => {
-                            this.accessToken.update(data.tokens)
-                            this.permissions.updateIsAuthenticatedUser(true)
-                            this.permissions.updateIsGithubUser(false)
-                            this.$router.push({ name: 'homepage-route' })
+            await validateOrReject(this.createUserModel)
+                .then(async () => {
+                    if (
+                        this.createUserModel.password === this.confirmPassword
+                    ) {
+                        await apiPublicAxios
+                            .post('user/signup', this.createUserModel)
+                            .then(({ data }) => {
+                                this.accessToken.update(data.tokens)
+                                this.permissions.updateIsAuthenticatedUser(true)
+                                this.permissions.updateIsGithubUser(false)
+                                this.$router.push({ name: 'homepage-route' })
+                            })
+                            .catch(() => {
+                                this.modalStore.openModal({
+                                    title: 'Something went wrong',
+                                    message: 'Server Error',
+                                    type: 'error',
+                                })
+                            })
+                    } else {
+                        this.modalStore.openModal({
+                            title: 'Incorrect password',
+                            message: 'Passwords do not match',
+                            type: 'error',
                         })
-                } else {
-                    alert('Incorrect password')
-                }
-            } catch (err) {
-                console.log(err)
-            }
+                    }
+                })
+                .catch((errors) => {
+                    const errorToDisplay = errors[0]
+                    switch (errorToDisplay.property) {
+                        case 'name':
+                            this.modalStore.openModal({
+                                title: 'Username invalid',
+                                message: Object.values(
+                                    errorToDisplay.constraints
+                                )[0],
+                                type: 'error',
+                            })
+                            break
+                        case 'email':
+                            this.modalStore.openModal({
+                                title: 'Email invalid',
+                                message: 'Must be provided a valid email',
+                                type: 'error',
+                            })
+                            break
+                        case 'password':
+                            this.modalStore.openModal({
+                                title: 'Password invalid',
+                                message: Object.values(
+                                    errorToDisplay.constraints
+                                )[0],
+                                type: 'error',
+                            })
+                    }
+                })
         },
 
         handlePassword(passwordId) {
-            this.errorModel = {
-                title: 'nak',
-                message: 'pinadu',
-                show: true,
-            }
             switch (passwordId) {
                 case 'one':
                     if (this.passwordOne.hidden) {
@@ -176,10 +209,6 @@ export default {
                 </form>
             </div>
         </div>
-        <ErrorAlertComponent
-            v-bind:error-alert="errorModel"
-            @exit="errorModel.show = false"
-        />
     </div>
 </template>
 

@@ -1,9 +1,10 @@
 <script>
-import { ErrorAlertModel } from '@/components/models/error-alert.model'
+import { ModalAlertModel } from '@/components/models/modal-alert.model'
 
 export default {
     props: {
-        errorAlert: ErrorAlertModel,
+        errorAlert: ModalAlertModel,
+        showState: Boolean,
     },
     data() {
         return {
@@ -23,7 +24,7 @@ export default {
 <template>
     <teleport to="#modals">
         <div
-            v-if="errorAlert.show"
+            v-if="showState && errorAlert.type === 'error'"
             class="error-component d-flex align-items-center justify-content-center text-light"
             @click="handleClick"
         >
@@ -35,7 +36,7 @@ export default {
                 <h1 class="error-title d-flex justify-content-between">
                     {{ errorAlert.title }}
                 </h1>
-                <p>{{ errorAlert.message }}</p>
+                <p class="error-message">{{ errorAlert.message }}</p>
                 <font-awesome-icon
                     icon="fa-solid fa-ghost"
                     class="error-icon h-75 w-100"
@@ -81,7 +82,7 @@ export default {
     align-self: center;
 }
 
-p {
+.error-message {
     color: #f7f3e8;
 
     font-size: 1.2rem;
