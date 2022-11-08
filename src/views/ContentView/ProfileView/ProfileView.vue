@@ -6,6 +6,7 @@ import ProfileUpdateFormComponent from '@/views/ContentView/ProfileView/componen
 import { useAccessTokenStore } from '@/stores/access-token.store'
 import { useUserDatasStore } from '@/stores/user-datas.store'
 import { useModalAlert } from '@/stores/modal-alert.store'
+import octocatImg from '/src/assets/octocat.png'
 
 export default {
     components: {
@@ -77,7 +78,7 @@ export default {
         getUserImage() {
             return this.isGithubUser && this.user.githubAccount.avatarUrl
                 ? this.user.githubAccount.avatarUrl
-                : '/src/assets/octocat.png'
+                : octocatImg
         },
     },
     watch: {

@@ -1,16 +1,13 @@
-FROM node:18-alpine3.15 as build-stage
+FROM node:18-alpine3.15
 WORKDIR /usr/src
 
 COPY package.json .
-RUN npm install
+RUN yarn install
+
 COPY . .
 
-RUN npm run build
+RUN yarn build
 
+CMD yarn preview
 
-FROM nginx:1.23.1-alpine as production-stage
-
-COPY --from=build-stage /usr/src/dist /usr/share/nginx/html
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 4173
