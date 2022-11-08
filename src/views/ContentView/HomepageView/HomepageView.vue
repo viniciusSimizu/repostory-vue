@@ -6,6 +6,7 @@ import { useUserDatasStore } from '@/stores/user-datas.store'
 import { UserInfoModel } from '@/views/ContentView/HomepageView/model/user-info.model'
 import GithubInfoPadComponent from '@/views/ContentView/HomepageView/components/GithubInfoPadComponent.vue'
 import { useModalAlert } from '@/stores/modal-alert.store'
+import octocatImg from '/src/assets/octocat.png'
 
 export default {
     name: 'homepage-view',
@@ -54,7 +55,7 @@ export default {
         getUserImage() {
             return this.isGithubUser && this.user.githubAccount.avatarUrl
                 ? this.user.githubAccount.avatarUrl
-                : '/src/assets/octocat.png'
+                : octocatImg
         },
     },
 }

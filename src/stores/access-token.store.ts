@@ -40,12 +40,12 @@ export const useAccessTokenStore = defineStore('accessToken', {
             this.refreshToken = null
         },
         apiAxios(): Axios {
+            // Typeage error, with meta['env']. NOT WORK 🤗
             const requestAxios = axios.create({
-                baseURL: import.meta.env.VITE_BASEURL_API,
+                baseURL: String(import.meta.env.VITE_BASEURL_API),
                 headers: { Authorization: `Bearer ${this.getAccessToken}` },
                 timeout: 3500,
             })
-
             requestAxios.interceptors.response.use(
                 (response) => response,
                 async (error) => {
