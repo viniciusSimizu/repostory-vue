@@ -1,6 +1,7 @@
 <script>
 import { FindUserModel } from '@/views/ContentView/UsersProfile/model/find-user.model'
 import { apiPublicAxios } from '@/axios/api-public.axios'
+import octocatImg from '/src/assets/octocat.png'
 
 export default {
     props: {
@@ -32,9 +33,7 @@ export default {
     },
     computed: {
         getUserImage() {
-            return (
-                this.user?.githubAccount?.avatarUrl || '/src/assets/octocat.png'
-            )
+            return this.user?.githubAccount?.avatarUrl || octocatImg
         },
     },
     watch: {
