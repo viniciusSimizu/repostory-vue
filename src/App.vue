@@ -16,7 +16,6 @@ export default {
         }
     },
     mounted() {
-        this.$router.push({ name: 'users-profile-route' })
         this.modalStore.$subscribe(() => {
             this.infos = this.modalStore.getInfosState
             this.show = this.modalStore.getShowState
