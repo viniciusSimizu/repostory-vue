@@ -16,8 +16,7 @@ export default {
         }
     },
     mounted() {
-        console.log(this.$route)
-        console.log(this.$router)
+        console.log(this.$router.getRoutes())
         this.modalStore.$subscribe(() => {
             this.infos = this.modalStore.getInfosState
             this.show = this.modalStore.getShowState
