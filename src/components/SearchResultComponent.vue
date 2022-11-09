@@ -1,5 +1,6 @@
 <script>
 import { SearchResultModel } from '@/views/ContentView/model/search-result.model'
+import octocatImg from '/src/assets/octocat.png'
 
 export default {
     props: {
@@ -16,7 +17,7 @@ export default {
     },
     computed: {
         getUserImage() {
-            return this.data.avatarUrl ?? '/src/assets/octocat.png'
+            return this.data.avatarUrl || octocatImg
         },
     },
 }
