@@ -1,5 +1,5 @@
 module.exports = {
     devServer: {
-        proxy: 'http://localhost:3000/',
+        proxy: 'https://repostory-backend.herokuapp.com/',
     },
 }
